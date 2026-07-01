@@ -24,11 +24,22 @@ A Claude Code skill for producing faceless YouTube videos, shorts, and podcasts 
 
 ## Installation
 
-Clone into your skills directory:
+### Option A: Install as a plugin (recommended)
+
+From Claude Code:
+
+```
+/plugin marketplace add iliasaberkane6-lab/claude-skill-media-pipeline
+/plugin install media-pipeline@media-pipeline
+```
+
+The skill is now available as `media-pipeline:media-pipeline`. Just ask Claude to "render my video" and it will use the skill automatically.
+
+### Option B: Clone into your skills directory
 
     git clone https://github.com/iliasaberkane/claude-skill-media-pipeline.git ~/.claude/skills/media-pipeline
 
-Or copy the SKILL.md into an existing project:
+### Option C: Copy into an existing project
 
     mkdir -p .claude/skills/media-pipeline
     cp SKILL.md .claude/skills/media-pipeline/
