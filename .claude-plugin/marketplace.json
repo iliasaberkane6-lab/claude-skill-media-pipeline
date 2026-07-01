@@ -1,0 +1,19 @@
+{
+  "name": "media-pipeline",
+  "description": "AI-powered media production pipeline for faceless YouTube videos, shorts, and podcasts.",
+  "owner": {
+    "name": "Ilias Aberkane"
+  },
+  "plugins": [
+    {
+      "name": "media-pipeline",
+      "source": "./",
+      "description": "Produce faceless videos, shorts, and podcasts with AI-generated images, TTS voiceover, and ffmpeg assembly.",
+      "author": {
+        "name": "Ilias Aberkane"
+      },
+      "homepage": "https://github.com/iliasaberkane/claude-skill-media-pipeline",
+      "license": "MIT"
+    }
+  ]
+}
