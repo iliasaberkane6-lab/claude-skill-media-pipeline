@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.mp4
+*.mp3
+*.wav
+*.jpg
+*.png
+fal_spend.json
+token.json
+.env
+.venv

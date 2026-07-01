@@ -106,7 +106,7 @@ No text, watermark, signature. Scene:
 ```python
 import json, urllib.request, os
 
-FAL_KEY = open(os.path.expanduser("~/.config/fal/key")).read().strip()
+FAL_KEY = open(os.path.expanduser("~/.config/fal/key")).read().strip()  # adjust to your fal API key path
 
 def generate_image(prompt, out_path, style_prefix="", model="fal-ai/flux/schnell", w=1920, h=1080):
     full = style_prefix + prompt
@@ -153,6 +153,7 @@ Before generating all 30+ images, generate ONE test image and have the user veri
 ### ElevenLabs via fal (recommended)
 
 ```python
+# FAL_KEY must be defined (see Phase 2)
 TTS_ENDPOINT = "https://fal.run/fal-ai/elevenlabs/tts/multilingual-v2"
 
 def synth_voice(text, out_path, voice="Brian"):
@@ -269,7 +270,7 @@ YouTube recommends -14 LUFS but -16 gives headroom for music bed.
 Download royalty-free tracks from YouTube Audio Library. Loop to video duration:
 
 ```bash
-ffmpeg -y -stream_loop -1 -i music.m4a -t $DURATION \
+ffmpeg -y -stream_loop -1 -i music.m4a -t $DURATION \  # DURATION must be integer seconds
   -af "afade=t=in:d=3,afade=t=out:st=$((DURATION-3)):d=3,volume=0.25" \
   -c:a aac -b:a 128k bed.m4a
 ```
@@ -297,6 +298,10 @@ ffmpeg -y -f lavfi -i "color=c=0x1a1a1a:s=1920x1080:r=30:d=6" \
 
 Concat end card to final video.
 
+### Font file
+
+ffmpeg `drawtext` and PIL both need a TTF font. Download one (e.g. Arial Bold) and place it as `font.ttf` in the working directory, or reference a system font like `/Library/Fonts/Arial Bold.ttf` (macOS) or `/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf` (Linux).
+
 ---
 
 ## Phase 6: Shorts (9:16 vertical)
@@ -313,7 +318,7 @@ ffmpeg -y -i long_video.mp4 -vf "
   [bg]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=40:8[b];
   [fg]scale=1080:-2[f];
   [b][f]overlay=(W-w)/2:(H-h)/2-200,format=yuv420p
-" -c:v libx264 -crf 20 -b:v 10M -c:a aac -b:a 160k short.mp4
+" -c:v libx264 -crf 20 -b:v 10M -c:a aac -b:a 160k short.mp4  # 10M for max quality; 5M is sufficient for most shorts
 ```
 
 ### Burned captions (ASS subtitles)
@@ -331,7 +336,7 @@ Format: Name,Fontname,Fontsize,PrimaryColour,OutlineColour,BackColour,Bold,Itali
 Style: Cap,Arial,86,&H00FFFFFF,&H00141414,&H00000000,-1,0,0,0,100,100,0,0,1,8,3,2,60,60,520,1
 ```
 
-Split narration into 2-3 word chunks, time each to its audio segment, add \fad(40,30) for pop-in.
+Split narration into 2-3 word chunks, time each to its audio segment, add `{\fad(40,30)}` for pop-in.
 
 Apply:
 ```bash
@@ -360,7 +365,7 @@ def make_thumbnail(bg_path, line1, line2, out_path):
     bg.save(out_path)
 ```
 
-Title patterns: "JEDER RANG EINES NINJA", "WHY IT SUCKS TO BE X", "YOUR LIFE AS Y".
+Title patterns: "JEDER RANG EINES NINJA", "WHY IT SUCKS TO BE X", "YOUR LIFE AS [TOPIC]".
 
 ---
 
@@ -397,7 +402,7 @@ def upload_video(video_path, title, description, tags, thumbnail_path=None):
 ```
 
 OAuth scopes: `youtube.upload`, `youtube.force-ssl` (for privacy changes).
-Token refresh: store refresh_token in token.json, auto-refreshs via google-auth.
+Token refresh: store refresh_token in token.json, auto-refreshes via google-auth.
 
 ---
 
@@ -421,7 +426,8 @@ def get_budget():
 def charge(amount):
     d = get_budget()
     d["spent"] = round(d.get("spent", 0.0) + amount, 4)
-    json.dump(d, open(SPEND_FILE, "w"))
+    with open(SPEND_FILE, "w") as f:
+        json.dump(d, f)
     return d["spent"]
 
 def budget_remaining():
